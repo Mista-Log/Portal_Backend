@@ -1,3 +1,4 @@
+
 from django.contrib import admin
 from django.urls import path, include
 
@@ -11,7 +12,7 @@ from drf_spectacular.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Authentication endpoints
+    # Authentication and account endpoints
     path(
         "api/auth/",
         include("apps.account.urls"),
