@@ -1,5 +1,6 @@
-from django.db import models
+from Lib import email
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 
 
 class UserRole(models.TextChoices):
@@ -35,12 +36,17 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("role", UserRole.ICT_ADMIN)
 
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+
         return self.create_user(
             email=email,
             password=password,
             **extra_fields
         )
-
 
 class User(AbstractUser):
     username = None
@@ -72,3 +78,4 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
