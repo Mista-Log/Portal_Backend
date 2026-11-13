@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    
 
     # Third-party apps
     "rest_framework",
@@ -47,6 +49,11 @@ INSTALLED_APPS = [
 
     # Local apps
     "apps.account",
+    "apps.academics.apps.AcademicsConfig",
+    "apps.students.apps.StudentsConfig",
+    "apps.courses.apps.CoursesConfig",
+    "apps.registrations.apps.RegistrationsConfig",
+   
 ]
 
 MIDDLEWARE = [
