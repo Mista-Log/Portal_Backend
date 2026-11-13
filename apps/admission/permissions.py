@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 from apps.account.models import UserRole
 
 
-# Roles that can see every application.
+# Roles that can see and review every application.
 REVIEWER_ROLES = {
     UserRole.ADMISSION_OFFICER,
     UserRole.REGISTRAR,
@@ -19,6 +19,7 @@ VIEWER_ROLES = REVIEWER_ROLES | {
 class ApplicationPermission(BasePermission):
     """
     - Submitting (POST): PG applicants only.
+    - Reviewing (PATCH): admission officers and the registrar only.
     - Viewing (GET): officers, registrar, applicants and students.
     - ICT admins and PG staff cannot access applications.
     """
@@ -31,5 +32,8 @@ class ApplicationPermission(BasePermission):
 
         if request.method == "POST":
             return user.role == UserRole.PG_APPLICANT
+
+        if request.method in ("PUT", "PATCH"):
+            return user.role in REVIEWER_ROLES
 
         return user.role in VIEWER_ROLES

@@ -1,7 +1,9 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from .models import Application, Qualification
+from apps.account.models import UserRole
+
+from .models import Application, Decision, Qualification
 
 
 class QualificationSerializer(serializers.ModelSerializer):
@@ -83,3 +85,33 @@ class ApplicationSerializer(serializers.ModelSerializer):
             )
 
         return application
+
+
+class ApplicationReviewSerializer(serializers.ModelSerializer):
+    """
+    Used by admission officers and the registrar to review an application.
+    Only eligibility and decision can be changed.
+    """
+
+    class Meta:
+        model = Application
+        fields = ["eligibility", "decision"]
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        # TODO: reject the update unless the application-form payment
+        # is verified (needs the Payment model).
+
+        was_admitted = instance.decision == Decision.ADMITTED
+
+        instance = super().update(instance, validated_data)
+
+        # Admitted applicants become students.
+        if instance.decision == Decision.ADMITTED and not was_admitted:
+            owner = instance.owner
+
+            if owner.role == UserRole.PG_APPLICANT:
+                owner.role = UserRole.STUDENT
+                owner.save(update_fields=["role"])
+
+        return instance

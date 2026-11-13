@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics, status
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
@@ -6,7 +6,10 @@ from rest_framework.views import APIView
 
 from .models import Application
 from .permissions import REVIEWER_ROLES, ApplicationPermission
-from .serializers import ApplicationSerializer
+from .serializers import (
+    ApplicationReviewSerializer,
+    ApplicationSerializer,
+)
 
 
 def applications_for(user):
@@ -48,12 +51,36 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class ApplicationDetailView(generics.RetrieveAPIView):
-    serializer_class = ApplicationSerializer
+class ApplicationDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [ApplicationPermission]
+    http_method_names = ["get", "patch", "head", "options"]
 
     def get_queryset(self):
         return applications_for(self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == "PATCH":
+            return ApplicationReviewSerializer
+        return ApplicationSerializer
+
+    def update(self, request, *args, **kwargs):
+        application = self.get_object()
+
+        serializer = ApplicationReviewSerializer(
+            application,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # Return the full application, not just the two fields.
+        return Response(
+            ApplicationSerializer(
+                application,
+                context={"request": request},
+            ).data
+        )
 
 
 class MyApplicationView(APIView):
@@ -63,6 +90,17 @@ class MyApplicationView(APIView):
 
     permission_classes = [ApplicationPermission]
 
+    @extend_schema(
+        tags=["Applications"],
+        summary="Get my application",
+        description="Returns the logged-in user's most recent application.",
+        responses={
+            200: ApplicationSerializer,
+            404: OpenApiResponse(
+                description="You have not submitted an application."
+            ),
+        },
+    )
     def get(self, request):
         application = (
             applications_for(request.user)
