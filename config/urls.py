@@ -39,4 +39,10 @@ urlpatterns = [
         ),
         name="redoc",
     ),
+
+    # Admission endpoints
+    path(
+        "api/applications/",
+        include("apps.admission.urls"),
+    ),
 ]
