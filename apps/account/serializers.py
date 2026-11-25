@@ -1,5 +1,5 @@
-from django.contrib.auth import authenticate
-from rest_framework import serializers
+from django.contrib.auth import authenticate # pyright: ignore[reportMissingModuleSource]
+from rest_framework import serializers # pyright: ignore[reportMissingImports]
 
 from .models import User, UserRole
 
@@ -21,6 +21,26 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+# Creating Student Serializer, it works like DTO
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for retrieving student details.
+    """
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "other_name",
+            "phone_number",
+            "role",
+        ]
+        read_only_fields = fields
 
 
 
