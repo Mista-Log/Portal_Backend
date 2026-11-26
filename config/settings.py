@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "drf_spectacular",
+    "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
 
     # Local apps
@@ -50,7 +51,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     'django.middleware.security.SecurityMiddleware',
@@ -176,6 +178,8 @@ SPECTACULAR_SETTINGS = {
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
