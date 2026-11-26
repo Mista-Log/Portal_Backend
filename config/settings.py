@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 
     # Local apps
     "apps.account",
+    "apps.students",
+    "apps.academics",
 ]
 
 MIDDLEWARE = [

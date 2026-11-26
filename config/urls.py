@@ -18,6 +18,13 @@ urlpatterns = [
         include("apps.account.urls"),
     ),
 
+    path(
+        "api/students/",
+        include("apps.students.urls"),
+    ),
+
+    path("api/academics/", include("apps.academics.urls")),
+
     # Swagger / OpenAPI documentation
     path(
         "api/schema/",
