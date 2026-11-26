@@ -179,11 +179,15 @@ SPECTACULAR_SETTINGS = {
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
-    "http://portal-frontend-nine-kappa.vercel.app",
+    "https://portal-backend-pqub.onrender.com",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+
+CORS_ALLOWED_ORIGINS = [
+    "https://portal-backend-pqub.onrender.com",
+]
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
