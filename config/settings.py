@@ -179,6 +179,7 @@ SPECTACULAR_SETTINGS = {
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
+    "http://portal-frontend-nine-kappa.vercel.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
